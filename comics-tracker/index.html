@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>Comics Tracker - Gestione Collezione Fumetti</title>
+
+  <!-- Google Fonts: Plus Jakarta Sans e Material Symbols Rounded (uniche risorse esterne) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ==========================================================================
+       STRUTTURA HTML DELL'APP MOBILE (CONTAINER MAX 420px)
+       ========================================================================== -->
+  <div class="app-wrapper">
+
+    <!-- 1. HEADER FISSO SUPERIORE -->
+    <header class="app-header">
+      <div class="header-logo-area">
+        <div class="pulse-dot" aria-hidden="true"></div>
+        <h1 class="app-title">
+          Comics Tracker
+          <span class="badge-pro">PRO</span>
+        </h1>
+      </div>
+      <div class="header-actions">
+        <!-- Icone decorative -->
+        <button class="icon-btn" aria-label="Notifiche e commenti">
+          <span class="material-symbols-rounded">chat_bubble</span>
+        </button>
+        <div class="avatar-wrapper" aria-label="Profilo utente">
+          <div class="avatar-inner">
+            <span class="material-symbols-rounded">person</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- 2. CONTENUTO PRINCIPALE (MAIN) -->
+    <main class="app-main">
+
+      <!-- Riga di stato: contatore serie e Live Sync -->
+      <section class="status-row" aria-label="Stato sincronizzazione">
+        <div class="status-info">
+          <span class="live-dot" aria-hidden="true"></span>
+          <span id="seriesCountLabel">5 serie in corso</span>
+        </div>
+        <div class="live-badge">
+          <span class="live-badge-dot" aria-hidden="true"></span>
+          <span>LIVE SYNC</span>
+        </div>
+      </section>
+
+      <!-- Azioni Rapide: + Aggiungi serie e + Volume -->
+      <section class="action-grid" aria-label="Azioni rapide">
+        <button id="openAddSeriesBtn" class="btn-action-primary" type="button">
+          <span class="material-symbols-rounded">add</span>
+          <span>+ Aggiungi serie</span>
+        </button>
+        <button id="openAddVolumeBtn" class="btn-action-secondary" type="button">
+          <span class="material-symbols-rounded">bookmark_add</span>
+          <span>+ Volume</span>
+        </button>
+      </section>
+
+      <!-- Barra Filtri: Tutti, Manga, Comics e pulsante ordinamento -->
+      <section class="filter-section" aria-label="Filtri per categoria">
+        <div class="filter-pills" role="tablist">
+          <button id="filterAll" class="pill-btn active" type="button" data-filter="all">Tutti (5)</button>
+          <button id="filterManga" class="pill-btn" type="button" data-filter="manga">Manga (3)</button>
+          <button id="filterComic" class="pill-btn" type="button" data-filter="comic">Comics (2)</button>
+        </div>
+        <!-- Icona interattiva ordina e filtra -->
+        <button id="openSortFilterBtn" class="icon-btn" style="width:34px; height:34px;" aria-label="Ordina e filtra serie" title="Ordina e filtra">
+          <span class="material-symbols-rounded" style="font-size:18px;">sort</span>
+        </button>
+      </section>
+
+      <!-- Lista dinamica delle serie seguite (Cards HUD) -->
+      <section id="seriesList" class="series-list" aria-label="Elenco delle opere seguite">
+        <!-- Le card verranno generate dinamicamente dal JavaScript -->
+      </section>
+
+      <!-- Riepilogo collezione inferiore (Ergonomia d'uso a una mano) -->
+      <section class="summary-card" aria-label="Gestione rapida collezione">
+        <div class="summary-glow" aria-hidden="true"></div>
+        <div class="summary-header">
+          <div class="summary-title-wrap">
+            <div class="summary-icon-box">
+              <span class="material-symbols-rounded" style="font-size:18px;">auto_stories</span>
+            </div>
+            <h2 class="summary-title">Gestione rapida collezione</h2>
+          </div>
+          <span id="totalVolumesBadge" class="summary-badge">Totale: 197 albi</span>
+        </div>
+        <p class="summary-text">
+          Aggiungi un nuovo fumetto alla libreria o registra l'acquisto del volume uscito questa settimana.
+        </p>
+        <div class="summary-actions">
+          <button id="summaryAddSeriesBtn" class="btn-action-primary" type="button">
+            <span class="material-symbols-rounded">playlist_add</span>
+            <span>+ Aggiungi serie</span>
+          </button>
+          <button id="summaryAddVolumeBtn" class="btn-action-secondary" type="button">
+            <span class="material-symbols-rounded">add_circle_outline</span>
+            <span>+ Volume rapido</span>
+          </button>
+        </div>
+      </section>
+
+    </main>
+
+  </div>
+
+  <!-- ==========================================================================
+       MODALI (AGGIUNGI SERIE, AGGIUNGI VOLUME, DETTAGLI E TRAMA)
+       ========================================================================== -->
+
+  <!-- MODALE 1: Aggiungi Nuova Serie -->
+  <div id="addSeriesModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="addSeriesTitle">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h2 id="addSeriesTitle" class="modal-title">
+          <span class="material-symbols-rounded" style="color:var(--coral-primary);">add_box</span>
+          Nuova Serie
+        </h2>
+        <button id="closeAddSeriesBtn" class="modal-close-btn" type="button" aria-label="Chiudi finestra">
+          <span class="material-symbols-rounded">close</span>
+        </button>
+      </div>
+
+      <form id="addSeriesForm" class="modal-form">
+        <div class="form-group">
+          <label for="seriesTitleInput" class="form-label">Titolo dell'opera</label>
+          <input id="seriesTitleInput" class="form-input" type="text" placeholder="Es. Chainsaw Man, Daredevil..." required />
+        </div>
+
+        <div class="form-row-2">
+          <div class="form-group">
+            <label for="seriesCategorySelect" class="form-label">Tipo Opera</label>
+            <select id="seriesCategorySelect" class="form-select">
+              <option value="manga">Manga</option>
+              <option value="comic">Comics</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label id="seriesSubcategoryLabel" for="seriesSubcategorySelect" class="form-label">Target / Categoria</label>
+            <select id="seriesSubcategorySelect" class="form-select">
+              <option value="Shonen">Shōnen</option>
+              <option value="Seinen">Seinen</option>
+              <option value="Shojo">Shōjo</option>
+              <option value="Josei">Josei</option>
+              <option value="Altro">Altro Manga</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row-2">
+          <div class="form-group">
+            <label for="seriesCurrentVolInput" class="form-label">Volume attuale</label>
+            <input id="seriesCurrentVolInput" class="form-input" type="number" min="0" value="1" required />
+          </div>
+          <div class="form-group">
+            <label for="seriesTotalVolInput" class="form-label">Totale volumi (stima)</label>
+            <input id="seriesTotalVolInput" class="form-input" type="number" min="1" value="15" />
+          </div>
+        </div>
+
+        <div class="form-row-2">
+          <div class="form-group">
+            <label for="seriesStatusInput" class="form-label">Stato iniziale</label>
+            <select id="seriesStatusInput" class="form-select">
+              <option value="In corso">In corso</option>
+              <option value="Mensile">Mensile</option>
+              <option value="Pausa">In pausa</option>
+              <option value="Allineato">Allineato</option>
+              <option value="percent">% Avanzamento</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="seriesCoverThemeSelect" class="form-label">Colore Copertina</label>
+            <select id="seriesCoverThemeSelect" class="form-select">
+              <option value="cover-violet">Violet (Viola)</option>
+              <option value="cover-ruby">Ruby (Rosso)</option>
+              <option value="cover-cyan">Cyan (Ciano)</option>
+              <option value="cover-blue">Blue (Blu)</option>
+              <option value="cover-amber">Amber (Ambra)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="seriesPlotInput" class="form-label">Trama / Sinossi</label>
+          <textarea id="seriesPlotInput" class="form-textarea" placeholder="Descrivi brevemente la trama dell'opera..."></textarea>
+        </div>
+
+        <button class="btn-action-primary" type="submit" style="margin-top:4px;">
+          <span class="material-symbols-rounded">save</span>
+          <span>Salva Serie</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODALE 2: Registra Volume (+ Volume) -->
+  <div id="addVolumeModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="addVolumeTitle">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h2 id="addVolumeTitle" class="modal-title">
+          <span class="material-symbols-rounded" style="color:var(--violet-accent);">bookmark_add</span>
+          Registra Volume
+        </h2>
+        <button id="closeAddVolumeBtn" class="modal-close-btn" type="button" aria-label="Chiudi finestra">
+          <span class="material-symbols-rounded">close</span>
+        </button>
+      </div>
+
+      <form id="addVolumeForm" class="modal-form">
+        <div class="form-group">
+          <label for="selectSeriesDropdown" class="form-label">Seleziona Serie</label>
+          <select id="selectSeriesDropdown" class="form-select" required>
+            <!-- Opzioni popolate dinamicamente via JS -->
+          </select>
+        </div>
+
+        <div id="volumePreviewBox" class="plot-box" style="padding:10px 12px; font-size:12px;">
+          Seleziona un'opera per registrare l'acquisto del volume successivo.
+        </div>
+
+        <button class="btn-action-primary" type="submit" style="margin-top:4px;">
+          <span class="material-symbols-rounded">add</span>
+          <span>Conferma +1 Volume</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODALE 3: Dettagli Opera & Trama -->
+  <div id="detailsModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="detailsTitle">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h2 id="detailsTitle" class="modal-title">
+          <span class="material-symbols-rounded" style="color:var(--cyan-tech);">menu_book</span>
+          <span id="detailsModalHeading">Dettagli Opera</span>
+        </h2>
+        <button id="closeDetailsBtn" class="modal-close-btn" type="button" aria-label="Chiudi finestra">
+          <span class="material-symbols-rounded">close</span>
+        </button>
+      </div>
+
+      <div class="modal-form">
+        <div class="plot-meta-badge">
+          <span id="detailsCategoryBadge" class="cover-type-badge">MANGA</span>
+          <span id="detailsVolumeBadge" style="color:var(--text-muted); font-size:11px;">Vol. 106</span>
+        </div>
+
+        <!-- Sezione modifica stato serie -->
+        <div class="form-group">
+          <label for="detailsStatusSelect" class="form-label">Modifica Stato Serie</label>
+          <div style="display:flex; gap:8px;">
+            <select id="detailsStatusSelect" class="form-select" style="flex:1;">
+              <option value="In corso">In corso</option>
+              <option value="Mensile">Mensile</option>
+              <option value="Pausa">In pausa</option>
+              <option value="Allineato">Allineato</option>
+              <option value="percent">% (Avanzamento letto)</option>
+              <option value="custom">Altro (Personalizzato)...</option>
+            </select>
+            <button id="saveDetailsStatusBtn" class="btn-action-primary" type="button" style="padding:8px 14px; font-size:12px; white-space:nowrap;">
+              <span class="material-symbols-rounded" style="font-size:16px;">check</span>
+              <span>Salva Stato</span>
+            </button>
+          </div>
+          <!-- Campo per stato personalizzato se necessario -->
+          <input id="detailsCustomStatusInput" class="form-input" type="text" placeholder="Scrivi lo stato (es. Bimestrale, 90%...)" style="display:none; margin-top:6px;" />
+        </div>
+
+        <div class="form-label">Sinossi dell'opera</div>
+        <div id="detailsPlotContent" class="plot-box">
+          Caricamento della trama...
+        </div>
+
+        <button id="closeDetailsBottomBtn" class="btn-action-secondary" type="button" style="margin-top:6px;">
+          <span>Chiudi</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODALE 4: Ordina & Filtra Avanzato -->
+  <div id="sortFilterModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="sortFilterTitle">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h2 id="sortFilterTitle" class="modal-title">
+          <span class="material-symbols-rounded" style="color:var(--coral-primary);">sort</span>
+          Ordina e Filtra
+        </h2>
+        <button id="closeSortFilterBtn" class="modal-close-btn" type="button" aria-label="Chiudi finestra">
+          <span class="material-symbols-rounded">close</span>
+        </button>
+      </div>
+
+      <form id="sortFilterForm" class="modal-form">
+        <!-- Ordinamento -->
+        <div class="form-group">
+          <label for="sortBySelect" class="form-label">Ordina per</label>
+          <select id="sortBySelect" class="form-select">
+            <option value="default">Predefinito (Ultimi aggiornati)</option>
+            <option value="title-asc">Titolo (A → Z)</option>
+            <option value="title-desc">Titolo (Z → A)</option>
+            <option value="vol-desc">Volume attuale (Dal più alto)</option>
+            <option value="vol-asc">Volume attuale (Dal più basso)</option>
+            <option value="progress-desc">Avanzamento (% più alta)</option>
+          </select>
+        </div>
+
+        <!-- Filtro per Stato dell'opera -->
+        <div class="form-group">
+          <label for="filterStatusSelect" class="form-label">Filtra per Stato</label>
+          <select id="filterStatusSelect" class="form-select">
+            <option value="all">Tutti gli stati</option>
+            <option value="In corso">Solo "In corso"</option>
+            <option value="Mensile">Solo "Mensile"</option>
+            <option value="Pausa">Solo "In pausa"</option>
+            <option value="Allineato">Solo "Allineato"</option>
+          </select>
+        </div>
+
+        <!-- Filtro per Genere / Universo -->
+        <div class="form-group">
+          <label for="filterSubcategorySelect" class="form-label">Filtra per Categoria / Universo</label>
+          <select id="filterSubcategorySelect" class="form-select">
+            <option value="all">Tutti i generi e universi</option>
+            <optgroup label="Manga">
+              <option value="Shonen">Shōnen</option>
+              <option value="Seinen">Seinen</option>
+              <option value="Shojo">Shōjo</option>
+              <option value="Josei">Josei</option>
+            </optgroup>
+            <optgroup label="Comics">
+              <option value="Marvel">Universo Marvel</option>
+              <option value="DC">Universo DC Comics</option>
+              <option value="Image">Image Comics</option>
+              <option value="Bonelli">Sergio Bonelli</option>
+            </optgroup>
+          </select>
+        </div>
+
+        <div style="display:flex; gap:10px; margin-top:6px;">
+          <button class="btn-action-primary" type="submit" style="flex:1;">
+            <span class="material-symbols-rounded">check</span>
+            <span>Applica</span>
+          </button>
+          <button id="resetSortFilterBtn" class="btn-action-secondary" type="button">
+            <span class="material-symbols-rounded">restart_alt</span>
+            <span>Resetta</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       JAVASCRIPT DIDATTICO "VANILLA"
+       Nessun framework, solo variabili semplici, funzioni ed eventi standard
+       ========================================================================== -->
+  <script src="script.js"></script>
+</body>
+</html>

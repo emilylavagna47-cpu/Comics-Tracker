@@ -1,0 +1,992 @@
+/* ==========================================================================
+       1. VARIABILI CSS (:root)
+       Palette cyberpunk dark, tipografia, raggi di curvatura e ombre neon
+       ========================================================================== */
+    :root {
+      /* Colori di sfondo e superfici */
+      --bg-dark: #10121B;
+      --card-base: #171A27;
+      --card-elevated: #1E2235;
+      --surface-dark: #131622;
+      
+      /* Bordi tech */
+      --border-tech: #2B3048;
+      --border-tech-subtle: rgba(43, 48, 72, 0.6);
+      --border-tech-hover: rgba(139, 92, 246, 0.6);
+
+      /* Colori di accento neon */
+      --coral-primary: #FF496C;
+      --coral-hover: #ff3358;
+      --coral-glow: rgba(255, 73, 108, 0.45);
+
+      --violet-accent: #8B5CF6;
+      --violet-glow: rgba(139, 92, 246, 0.35);
+
+      --cyan-tech: #00F0FF;
+      --cyan-glow: rgba(0, 240, 255, 0.4);
+
+      /* Testo */
+      --text-main: #F5F5FA;
+      --text-muted: #94A3B8;
+      --text-subtle: #64748B;
+
+      /* Font */
+      --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'Space Mono', monospace;
+
+      /* Raggi di curvatura (Border Radius) */
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-full: 9999px;
+
+      /* Ombre ed effetti glow */
+      --shadow-neon-coral: 0 0 16px -2px var(--coral-glow);
+      --shadow-neon-violet: 0 0 16px -2px var(--violet-glow);
+      --shadow-tech-card: 0 8px 24px -6px rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+    }
+
+    /* ==========================================================================
+       2. RESET E LAYOUT MOBILE-FIRST
+       Layout centrato fino a max 420px su schermi grandi
+       ========================================================================== */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      min-height: 100%;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      /* Griglia decorativa tech cyberpunk sullo sfondo */
+      background-image: radial-gradient(rgba(139, 92, 246, 0.08) 1px, transparent 0);
+      background-size: 16px 16px;
+    }
+
+    /* Contenitore principale dell'app mobile */
+    .app-wrapper {
+      width: 100%;
+      max-width: 420px;
+      min-height: 100vh;
+      background-color: var(--bg-dark);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      border-left: 1px solid rgba(43, 48, 72, 0.25);
+      border-right: 1px solid rgba(43, 48, 72, 0.25);
+    }
+
+    /* Stile icone Material Symbols */
+    .material-symbols-rounded {
+      font-family: 'Material Symbols Rounded';
+      font-weight: normal;
+      font-style: normal;
+      font-size: 20px;
+      line-height: 1;
+      display: inline-block;
+      vertical-align: middle;
+      user-select: none;
+    }
+
+    /* ==========================================================================
+       3. HEADER FISSO SUPERIORE
+       ========================================================================== */
+    .app-header {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      width: 100%;
+      height: 58px;
+      padding: 0 16px;
+      background: rgba(16, 18, 27, 0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-tech-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .header-logo-area {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Punto pulsante rosa fluo */
+    .pulse-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: var(--coral-primary);
+      box-shadow: 0 0 10px var(--coral-primary);
+      animation: neonPulse 2s infinite ease-in-out;
+    }
+
+    @keyframes neonPulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.85); }
+    }
+
+    .app-title {
+      font-size: 19px;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Badge "PRO" */
+    .badge-pro {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--coral-primary);
+      background-color: rgba(255, 73, 108, 0.12);
+      border: 1px solid rgba(255, 73, 108, 0.35);
+      padding: 2px 6px;
+      border-radius: var(--radius-sm);
+      letter-spacing: 1px;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Pulsante decorativo chat fumetto */
+    .icon-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: var(--radius-md);
+      background-color: var(--card-base);
+      border: 1px solid var(--border-tech);
+      color: var(--text-muted);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .icon-btn:hover {
+      color: var(--coral-primary);
+      border-color: rgba(255, 73, 108, 0.4);
+    }
+
+    .icon-btn.active {
+      color: var(--coral-primary);
+      border-color: var(--coral-primary);
+      box-shadow: 0 0 10px rgba(255, 73, 108, 0.45);
+    }
+
+    optgroup {
+      background-color: var(--card-base);
+      color: var(--coral-primary);
+      font-family: var(--font-sans);
+      font-weight: 700;
+    }
+
+    /* Avatar utente con bordo sfumato neon */
+    .avatar-wrapper {
+      width: 38px;
+      height: 38px;
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, var(--violet-accent), var(--coral-primary));
+      padding: 1.5px;
+      box-shadow: var(--shadow-neon-violet);
+    }
+
+    .avatar-inner {
+      width: 100%;
+      height: 100%;
+      border-radius: 10.5px;
+      background-color: var(--bg-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-main);
+    }
+
+    /* ==========================================================================
+       4. CONTENUTO PRINCIPALE (MAIN)
+       ========================================================================== */
+    .app-main {
+      flex: 1;
+      padding: 16px 16px 32px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* Sottotitolo e indicatore Live Sync */
+    .status-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 4px 2px;
+    }
+
+    .status-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .live-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: var(--cyan-tech);
+      box-shadow: 0 0 8px var(--cyan-tech);
+      position: relative;
+    }
+
+    .live-badge {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--cyan-tech);
+      background: rgba(0, 240, 255, 0.1);
+      border: 1px solid rgba(0, 240, 255, 0.3);
+      padding: 3px 8px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      letter-spacing: 0.5px;
+    }
+
+    .live-badge-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background-color: var(--cyan-tech);
+    }
+
+    /* Griglia delle due azioni principali */
+    .action-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .btn-action-primary {
+      background: linear-gradient(135deg, var(--coral-primary) 0%, var(--coral-hover) 100%);
+      color: #ffffff;
+      border: none;
+      padding: 12px 14px;
+      border-radius: var(--radius-md);
+      font-family: var(--font-sans);
+      font-size: 13.5px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      box-shadow: var(--shadow-neon-coral);
+      transition: transform 0.15s ease, filter 0.15s ease;
+    }
+
+    .btn-action-primary:active {
+      transform: scale(0.97);
+    }
+
+    .btn-action-secondary {
+      background-color: var(--card-elevated);
+      color: #ede9fe;
+      border: 1px solid rgba(139, 92, 246, 0.5);
+      padding: 12px 14px;
+      border-radius: var(--radius-md);
+      font-family: var(--font-sans);
+      font-size: 13.5px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      box-shadow: var(--shadow-neon-violet);
+      transition: all 0.2s ease;
+    }
+
+    .btn-action-secondary .material-symbols-rounded {
+      color: var(--violet-accent);
+    }
+
+    .btn-action-secondary:hover {
+      border-color: var(--violet-accent);
+      background-color: rgba(139, 92, 246, 0.18);
+    }
+
+    .btn-action-secondary:active {
+      transform: scale(0.97);
+    }
+
+    /* ==========================================================================
+       5. FILTRI E ORDINAMENTO
+       ========================================================================== */
+    .filter-section {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .filter-pills {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 2px 0;
+    }
+
+    .pill-btn {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 7px 14px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      border: 1px solid var(--border-tech);
+      background-color: var(--card-base);
+      color: var(--text-muted);
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .pill-btn:hover {
+      border-color: rgba(139, 92, 246, 0.5);
+      color: var(--text-main);
+    }
+
+    /* Pillola attiva con glow neon corallo */
+    .pill-btn.active {
+      background-color: var(--coral-primary);
+      border-color: var(--coral-primary);
+      color: #ffffff;
+      box-shadow: 0 0 12px rgba(255, 73, 108, 0.45);
+    }
+
+    /* ==========================================================================
+       6. LISTA DELLE SCHEDE FUMETTI (CARDS)
+       ========================================================================== */
+    .series-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .series-card {
+      background: linear-gradient(180deg, var(--card-elevated) 0%, var(--card-base) 100%);
+      border: 1px solid rgba(43, 48, 72, 0.85);
+      border-radius: var(--radius-lg);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      box-shadow: var(--shadow-tech-card);
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.25s ease, transform 0.2s ease;
+    }
+
+    .series-card:hover {
+      border-color: var(--border-tech-hover);
+    }
+
+    /* Angolino tech tagliato in alto a destra */
+    .tech-corner {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 44px;
+      height: 44px;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .tech-corner::after {
+      content: '';
+      position: absolute;
+      top: -22px;
+      right: -22px;
+      width: 44px;
+      height: 44px;
+      background: rgba(255, 73, 108, 0.15);
+      border-bottom: 1px solid rgba(255, 73, 108, 0.4);
+      transform: rotate(45deg);
+    }
+
+    /* Parte superiore della card (copertina + dettagli) */
+    .card-top {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+
+    /* Mini copertina cyberpunk stilizzata */
+    .card-cover {
+      width: 64px;
+      height: 96px;
+      flex-shrink: 0;
+      border-radius: var(--radius-md);
+      padding: 5px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.8);
+      border: 1px solid rgba(139, 92, 246, 0.4);
+    }
+
+    /* Copertine con temi cromatici personalizzati */
+    .cover-violet {
+      background: linear-gradient(180deg, #2A1E3E 0%, #1A162B 50%, #12111E 100%);
+      border-color: rgba(139, 92, 246, 0.5);
+    }
+
+    .cover-ruby {
+      background: linear-gradient(180deg, #2D121C 0%, #1C1421 50%, #12111E 100%);
+      border-color: rgba(255, 73, 108, 0.45);
+    }
+
+    .cover-cyan {
+      background: linear-gradient(180deg, #172033 0%, #141824 50%, #10121B 100%);
+      border-color: rgba(0, 240, 255, 0.45);
+    }
+
+    .cover-blue {
+      background: linear-gradient(180deg, #1E2538 0%, #121624 50%, #0D101A 100%);
+      border-color: rgba(59, 130, 246, 0.45);
+    }
+
+    .cover-amber {
+      background: linear-gradient(180deg, #251821 0%, #161219 50%, #0F0E17 100%);
+      border-color: rgba(245, 158, 11, 0.45);
+    }
+
+    /* Header interno copertina: puntino + indice */
+    .cover-header {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 2;
+    }
+
+    .cover-header-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background-color: var(--cyan-tech);
+    }
+
+    .cover-header-index {
+      font-family: var(--font-mono);
+      font-size: 8px;
+      color: var(--cyan-tech);
+    }
+
+    /* Centro copertina: icona e codice serie */
+    .cover-body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      z-index: 2;
+    }
+
+    .cover-body .material-symbols-rounded {
+      font-size: 24px;
+    }
+
+    .cover-code {
+      font-size: 8.5px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      color: var(--text-main);
+      margin-top: 2px;
+      text-transform: uppercase;
+    }
+
+    /* Badge tipologia Manga/Comics sulla copertina */
+    .cover-type-badge {
+      font-family: var(--font-mono);
+      font-size: 7.5px;
+      font-weight: 700;
+      padding: 1px 4px;
+      border-radius: 3px;
+      letter-spacing: 0.8px;
+      z-index: 2;
+      background: rgba(139, 92, 246, 0.4);
+      color: #ddd6fe;
+      border: 1px solid rgba(139, 92, 246, 0.5);
+    }
+
+    /* Informazioni testuali e avanzamento */
+    .card-info {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .card-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    .card-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-main);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Badge di stato (In corso, Mensile, Pausa, ecc.) */
+    .status-badge {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 5px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .status-green {
+      color: #34D399;
+      background-color: rgba(6, 78, 59, 0.6);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .status-violet {
+      color: #C4B5FD;
+      background-color: rgba(91, 33, 182, 0.6);
+      border: 1px solid rgba(139, 92, 246, 0.35);
+    }
+
+    .status-cyan {
+      color: #67E8F9;
+      background-color: rgba(8, 51, 68, 0.6);
+      border: 1px solid rgba(0, 240, 255, 0.35);
+    }
+
+    .status-amber {
+      color: #FCD34D;
+      background-color: rgba(120, 53, 15, 0.6);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+    }
+
+    .status-dot-mini {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background-color: currentColor;
+    }
+
+    /* Conteggio volume */
+    .card-volume-text {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 1px;
+    }
+
+    .card-volume-num {
+      font-family: var(--font-mono);
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--coral-primary);
+    }
+
+    .card-volume-total {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-subtle);
+    }
+
+    /* Dettaglio capitolo o data */
+    .card-subdetail {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11.5px;
+      color: #cbd5e1;
+      margin-top: 2px;
+    }
+
+    .card-subdetail .material-symbols-rounded {
+      font-size: 14px;
+      color: var(--cyan-tech);
+    }
+
+    /* Barra di avanzamento neon */
+    .progress-bar-container {
+      margin-top: 6px;
+      width: 100%;
+      height: 6px;
+      background-color: #10121B;
+      border: 1px solid var(--border-tech);
+      border-radius: var(--radius-full);
+      padding: 1px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--violet-accent) 0%, var(--coral-primary) 100%);
+      border-radius: var(--radius-full);
+      box-shadow: 0 0 8px var(--coral-primary);
+      transition: width 0.35s ease;
+    }
+
+    /* Footer della card: data e pulsanti */
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 8px;
+      border-top: 1px solid rgba(43, 48, 72, 0.45);
+    }
+
+    .card-footer-info {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-subtle);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .card-footer-info .material-symbols-rounded {
+      font-size: 13px;
+    }
+
+    .card-buttons {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Pillola "Dettagli" */
+    .btn-card-details {
+      padding: 5px 10px;
+      background-color: var(--card-base);
+      border: 1px solid var(--border-tech);
+      color: var(--text-muted);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-sans);
+      font-size: 11.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-card-details:hover {
+      border-color: rgba(139, 92, 246, 0.6);
+      color: var(--text-main);
+    }
+
+    /* Pillola "+1 Vol" */
+    .btn-card-add-vol {
+      padding: 5px 12px;
+      background-color: var(--coral-primary);
+      color: #ffffff;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      box-shadow: var(--shadow-neon-coral);
+      transition: transform 0.15s ease, background-color 0.15s ease;
+    }
+
+    .btn-card-add-vol:active {
+      transform: scale(0.95);
+    }
+
+    .btn-card-add-vol:hover {
+      background-color: var(--coral-hover);
+    }
+
+    /* ==========================================================================
+       7. BOX RIEPILOGO ERGONOMICO INFERIORE
+       ========================================================================== */
+    .summary-card {
+      margin-top: 16px;
+      padding: 16px;
+      background: linear-gradient(135deg, var(--card-elevated) 0%, #181C2B 60%, var(--bg-dark) 100%);
+      border: 1px solid rgba(139, 92, 246, 0.35);
+      border-radius: var(--radius-lg);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow-tech-card);
+    }
+
+    /* Luce decorativa violetta di sfondo */
+    .summary-glow {
+      position: absolute;
+      right: -30px;
+      bottom: -30px;
+      width: 140px;
+      height: 140px;
+      background: rgba(139, 92, 246, 0.15);
+      border-radius: 50%;
+      filter: blur(28px);
+      pointer-events: none;
+    }
+
+    .summary-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 2;
+    }
+
+    .summary-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .summary-icon-box {
+      width: 30px;
+      height: 30px;
+      border-radius: var(--radius-sm);
+      background: rgba(139, 92, 246, 0.15);
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      color: #a78bfa;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .summary-title {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .summary-badge {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--coral-primary);
+      background: rgba(255, 73, 108, 0.12);
+      border: 1px solid rgba(255, 73, 108, 0.3);
+      padding: 2px 7px;
+      border-radius: 5px;
+    }
+
+    .summary-text {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.45;
+      z-index: 2;
+    }
+
+    .summary-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      z-index: 2;
+    }
+
+    .summary-actions .btn-action-primary,
+    .summary-actions .btn-action-secondary {
+      padding: 9px 10px;
+      font-size: 12px;
+    }
+
+    /* ==========================================================================
+       8. MODALI DIDATTICHE E ACCESSIBILI
+       ========================================================================== */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 12, 18, 0.85);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-box {
+      width: 100%;
+      max-width: 380px;
+      background: linear-gradient(180deg, var(--card-elevated) 0%, var(--card-base) 100%);
+      border: 1px solid var(--border-tech);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.8), 0 0 20px rgba(139, 92, 246, 0.25);
+      transform: translateY(16px);
+      transition: transform 0.25s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .modal-overlay.open .modal-box {
+      transform: translateY(0);
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(43, 48, 72, 0.5);
+      padding-bottom: 10px;
+    }
+
+    .modal-title {
+      font-size: 16px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .modal-close-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.15s ease;
+    }
+
+    .modal-close-btn:hover {
+      color: var(--coral-primary);
+    }
+
+    /* Form e campi input */
+    .modal-form {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .form-input,
+    .form-select,
+    .form-textarea {
+      width: 100%;
+      background-color: #10121B;
+      border: 1px solid var(--border-tech);
+      border-radius: var(--radius-sm);
+      color: var(--text-main);
+      padding: 10px 12px;
+      font-family: var(--font-sans);
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .form-input:focus,
+    .form-select:focus,
+    .form-textarea:focus {
+      border-color: var(--coral-primary);
+      box-shadow: 0 0 10px rgba(255, 73, 108, 0.35);
+    }
+
+    .form-row-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .form-textarea {
+      resize: vertical;
+      min-height: 80px;
+      line-height: 1.4;
+    }
+
+    /* Box anteprima trama nella modale dettagli */
+    .plot-box {
+      background: #10121B;
+      border: 1px solid var(--border-tech);
+      border-radius: var(--radius-sm);
+      padding: 14px;
+      font-size: 13px;
+      line-height: 1.55;
+      color: #cbd5e1;
+      max-height: 240px;
+      overflow-y: auto;
+    }
+
+    .plot-meta-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--cyan-tech);
+      margin-bottom: 8px;
+    }
+
+    /* Messaggio di stato lista vuota */
+    .empty-state {
+      text-align: center;
+      padding: 30px 16px;
+      color: var(--text-muted);
+      font-size: 13px;
+    }
